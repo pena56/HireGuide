@@ -12,6 +12,7 @@
   "dependencies": {
     "@convex-dev/better-auth": "^0.8.3",
     "@convex-dev/react-query": "0.0.0-alpha.8",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.2.2",
     "@tanstack/react-router": "^1.130.2",

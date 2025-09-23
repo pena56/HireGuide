@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as companies from "../companies.js";
 import type * as http from "../http.js";
 import type * as memberships from "../memberships.js";
+import type * as profile from "../profile.js";
 import type * as user from "../user.js";
 
 import type {
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   companies: typeof companies;
   http: typeof http;
   memberships: typeof memberships;
+  profile: typeof profile;
   user: typeof user;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

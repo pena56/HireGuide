@@ -30,7 +30,7 @@ export const newCompanyFormSchema = z.object({
 });
 
 export function NewCompanyForm() {
-  const generateUploadUrl = useMutation(api.companies.generateUploadImageUrl);
+  const generateUploadUrl = useMutation(api.user.generateUploadImageUrl);
   const createCompany = useMutation(api.companies.createCompany);
 
   const navigate = useNavigate();

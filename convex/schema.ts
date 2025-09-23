@@ -5,8 +5,8 @@ export default defineSchema({
   profile: defineTable({
     name: v.string(),
     email: v.string(),
-    image: v.optional(v.id("_storaage")),
-  }),
+    image: v.optional(v.id("_storage")),
+  }).index("by_email", ["email"]),
   companies: defineTable({
     name: v.string(),
     location: v.string(),

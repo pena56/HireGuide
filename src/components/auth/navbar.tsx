@@ -10,15 +10,18 @@ import {
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { authClient } from "@/lib/auth-client";
-import { Authenticated, AuthLoading } from "convex/react";
+import { api } from "@/lib/convex";
+import { Authenticated, AuthLoading, useQuery } from "convex/react";
 import { Skeleton } from "../ui/skeleton";
 
 export function Navbar() {
   const navigate = useNavigate();
-  const { data } = authClient.useSession();
+  const profile = useQuery(api.profile.getProfile);
+
+  console.log(profile);
 
   return (
-    <nav className="w-full h-[50px] flex justify-between items-center bg-accent px-4 md:px-10 sticky top-0">
+    <nav className="w-full h-[50px] flex justify-between items-center bg-accent px-4 md:px-10 sticky top-0 font-poppins">
       <Link to="/">
         <div className="flex items-center gap-2">
           <img
@@ -38,9 +41,12 @@ export function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar>
-                <AvatarImage src={data?.user?.image ?? ""} />
+                {profile?.profileImageUrl && (
+                  <AvatarImage src={profile?.profileImageUrl} />
+                )}
+
                 <AvatarFallback className="uppercase bg-amber-400 cursor-pointer text-black">
-                  {data?.user?.name?.substring(0, 2)}
+                  {profile?.name?.substring(0, 2)}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>

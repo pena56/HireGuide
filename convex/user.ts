@@ -30,3 +30,9 @@ export const userQuery = customQuery(query, {
     return { ctx: { user }, args };
   },
 });
+
+export const generateUploadImageUrl = userMutation({
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});

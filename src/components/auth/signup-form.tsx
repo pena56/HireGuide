@@ -12,9 +12,11 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth-client";
+import { api } from "@/lib/convex";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useMutation } from "convex/react";
 
 export const signupFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -24,6 +26,8 @@ export const signupFormSchema = z.object({
 
 export function SignupForm() {
   const navigate = useNavigate();
+
+  const createProfile = useMutation(api.profile.createProfile);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,16 +52,22 @@ export function SignupForm() {
         onRequest: () => {
           setIsSubmitting(true);
         },
-        onSuccess: () => {
+        onSuccess: async () => {
+          createProfile({
+            email: values.email,
+            name: values.name,
+          }).catch((err) => {
+            toast.error(err?.message);
+          });
+
+          setIsSubmitting(false);
           toast.success("Account created successfully!");
           navigate({
-            to: "/profile",
+            to: "/",
           });
         },
         onError: (ctx) => {
           toast.error(ctx.error.message);
-        },
-        onResponse() {
           setIsSubmitting(false);
         },
       }

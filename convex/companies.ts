@@ -1,12 +1,6 @@
 import { v } from "convex/values";
 import { userMutation } from "./user";
 
-export const generateUploadImageUrl = userMutation({
-  handler: async (ctx) => {
-    return await ctx.storage.generateUploadUrl();
-  },
-});
-
 export const createCompany = userMutation({
   args: {
     name: v.string(),

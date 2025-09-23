@@ -1,19 +1,11 @@
-import { ConvexError, v } from "convex/values";
-import { query } from "./_generated/server";
-import { authComponent } from "./auth";
+import { userQuery } from "./user";
 
-export const getUserMemberships = query({
+export const getUserMemberships = userQuery({
   args: {},
   handler: async (ctx) => {
-    const user = await authComponent.getAuthUser(ctx);
-
-    if (!user) {
-      throw new ConvexError("No User found");
-    }
-
     const memberships = await ctx.db
       .query("memberships")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .withIndex("by_user", (q) => q.eq("userEmail", ctx.user.email))
       .collect();
 
     const companies = await Promise.all(

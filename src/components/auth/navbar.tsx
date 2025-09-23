@@ -18,8 +18,6 @@ export function Navbar() {
   const navigate = useNavigate();
   const profile = useQuery(api.profile.getProfile);
 
-  console.log(profile);
-
   return (
     <nav className="w-full h-[50px] flex justify-between items-center bg-accent px-4 md:px-10 sticky top-0 font-poppins">
       <Link to="/">

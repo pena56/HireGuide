@@ -5,11 +5,6 @@ import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
 import { authClient } from "@/lib/auth-client";
 import { Toaster } from "@/components/ui/sonner";
 
-const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL;
-if (!CONVEX_URL) {
-  console.error("missing envar CONVEX_URL");
-}
-
 const convex = new ConvexReactClient(
   import.meta.env.VITE_CONVEX_URL as string,
   {

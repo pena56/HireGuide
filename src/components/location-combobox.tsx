@@ -83,7 +83,6 @@ export function AddressCombobox({
           const data = await response.json();
           setPredictions(data.predictions || []);
         } catch (error) {
-          console.error("Failed to fetch predictions:", error);
           setPredictions([]); // Clear predictions on error
         } finally {
           setIsLoading(false);
@@ -97,9 +96,6 @@ export function AddressCombobox({
   }, [debouncedSearchTerm]);
 
   if (!apiKey) {
-    console.error(
-      "Google Places API key is missing. Please add VITE_GOOGLE_PLACES_API_KEY to your .env file."
-    );
     return <p className="text-red-500">API Key for maps is missing.</p>;
   }
 
@@ -191,10 +187,6 @@ export function AddressCombobox({
                               lng,
                             });
                           } catch (error) {
-                            console.error(
-                              "Failed to fetch place details:",
-                              error
-                            );
                             onAddressSelect(prediction);
                           }
                         }}

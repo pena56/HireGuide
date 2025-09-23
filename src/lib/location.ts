@@ -5,7 +5,6 @@ type Coordinates = {
 
 export async function getUserLocation(): Promise<Coordinates | null> {
   if (!navigator.geolocation) {
-    console.warn("Geolocation not supported by this browser.");
     return await fallbackToIPLocation();
   }
 
@@ -28,8 +27,6 @@ export async function getUserLocation(): Promise<Coordinates | null> {
       longitude: position.coords.longitude,
     };
   } catch (highAccuracyError) {
-    console.warn("High accuracy failed:", highAccuracyError);
-
     try {
       const position = await getCurrentPosition({
         enableHighAccuracy: false,
@@ -41,7 +38,6 @@ export async function getUserLocation(): Promise<Coordinates | null> {
         longitude: position.coords.longitude,
       };
     } catch (lowAccuracyError) {
-      console.error("Low accuracy also failed:", lowAccuracyError);
       return await fallbackToIPLocation();
     }
   }
@@ -62,7 +58,6 @@ async function fallbackToIPLocation(): Promise<Coordinates | null> {
     }
     return null;
   } catch (err) {
-    console.error("IP-based fallback failed:", err);
     return null;
   }
 }

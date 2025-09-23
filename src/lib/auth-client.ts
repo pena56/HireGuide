@@ -11,13 +11,13 @@ export const authClient = createAuthClient({
   plugins: [convexClient(), crossDomainClient()],
 });
 
-type BeforeLoadContext = {
-  location: {
-    href: string;
-  };
-};
+// type BeforeLoadContext = {
+//   location: {
+//     href: string;
+//   };
+// };
 
-export const checkAuth = async (ctx: BeforeLoadContext) => {
+export const checkAuth = async () => {
   const { data } = await authClient.getSession();
 
   if (!data?.user) {

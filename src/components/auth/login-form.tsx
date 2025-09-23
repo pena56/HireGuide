@@ -12,7 +12,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth-client";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -22,8 +22,6 @@ export const loginFormSchema = z.object({
 });
 
 export function LoginForm() {
-  const navigate = useNavigate();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof loginFormSchema>>({

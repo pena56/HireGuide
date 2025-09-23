@@ -57,7 +57,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-sm mx-auto py-10">
+    <div className="flex flex-col gap-8 w-full max-w-sm mx-auto py-10 font-poppins">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

@@ -18,9 +18,9 @@ type BeforeLoadContext = {
 };
 
 export const checkAuth = async (ctx: BeforeLoadContext) => {
-  const cached_auth_data = localStorage.getItem("better-auth_session_data");
+  const { data } = await authClient.getSession();
 
-  if (cached_auth_data === "null") {
+  if (!data?.user) {
     throw redirect({
       to: "/login",
       // search: {

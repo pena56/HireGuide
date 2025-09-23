@@ -39,7 +39,7 @@ export default function AppConvexProvider({
         storageKey="vite-ui-theme"
       >
         {children}
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-right" richColors className="font-poppins" />
       </ThemeProvider>
     </ConvexBetterAuthProvider>
   );

@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/auth/login-form";
+import { Navbar } from "@/components/auth/navbar";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/login")({
@@ -7,8 +8,9 @@ export const Route = createFileRoute("/login")({
 
 function RouteComponent() {
   return (
-    <div>
+    <main>
+      <Navbar />
       <LoginForm />
-    </div>
+    </main>
   );
 }

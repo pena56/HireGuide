@@ -15,11 +15,8 @@ import { Authenticated, AuthLoading, useQuery } from "convex/react";
 import { Skeleton } from "../ui/skeleton";
 
 export function Navbar() {
-  const navigate = useNavigate();
-  const profile = useQuery(api.profile.getProfile);
-
   return (
-    <nav className="w-full h-[50px] flex justify-between items-center bg-accent px-4 md:px-10 sticky top-0 font-poppins">
+    <nav className="w-full h-[50px] flex justify-between items-center bg-accent px-4 md:px-10 sticky top-0 font-poppins z-10">
       <Link to="/">
         <div className="flex items-center gap-2">
           <img
@@ -36,43 +33,7 @@ export function Navbar() {
         <ThemeToggle />
 
         <Authenticated>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Avatar>
-                {profile?.profileImageUrl && (
-                  <AvatarImage src={profile?.profileImageUrl} />
-                )}
-
-                <AvatarFallback className="uppercase bg-amber-400 cursor-pointer text-black">
-                  {profile?.name?.substring(0, 2)}
-                </AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[200px] font-poppins">
-              <DropdownMenuLabel className="text-xs ">
-                My Account
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link to="/profile" className="w-full">
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => {
-                  await authClient.signOut({
-                    fetchOptions: {
-                      onSuccess: () => {
-                        navigate({ to: "/login" });
-                      },
-                    },
-                  });
-                }}
-              >
-                Signout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ProfileDropdown />
         </Authenticated>
 
         <AuthLoading>
@@ -82,3 +43,46 @@ export function Navbar() {
     </nav>
   );
 }
+
+export const ProfileDropdown = () => {
+  const navigate = useNavigate();
+  const profile = useQuery(api.profile.getProfile);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Avatar>
+          {profile?.profileImageUrl && (
+            <AvatarImage src={profile?.profileImageUrl} />
+          )}
+
+          <AvatarFallback className="uppercase bg-amber-400 cursor-pointer text-black">
+            {profile?.name?.substring(0, 2)}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-[200px] font-poppins">
+        <DropdownMenuLabel className="text-xs ">My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link to="/profile" className="w-full">
+            Profile
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={async () => {
+            await authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  navigate({ to: "/login" });
+                },
+              },
+            });
+          }}
+        >
+          Signout
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

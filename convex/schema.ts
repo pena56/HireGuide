@@ -18,9 +18,12 @@ export default defineSchema({
   memberships: defineTable({
     companyId: v.id("companies"),
     userEmail: v.string(),
+    invitedBy: v.string(),
+    invitedByEmail: v.string(),
     role: v.union(v.literal("manager"), v.literal("employee")),
     status: v.union(
       v.literal("invited"),
+      v.literal("rejected"),
       v.literal("active"),
       v.literal("inactive"),
       v.literal("terminated")

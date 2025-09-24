@@ -20,6 +20,7 @@ import { LocateIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { showErrorMessage } from "@/lib/utils";
 
 export const newCompanyFormSchema = z.object({
   name: z.string().min(1, "Company name is required"),
@@ -30,7 +31,7 @@ export const newCompanyFormSchema = z.object({
 });
 
 export function NewCompanyForm() {
-  const generateUploadUrl = useMutation(api.user.generateUploadImageUrl);
+  const generateUploadUrl = useMutation(api.utils.generateUploadImageUrl);
   const createCompany = useMutation(api.companies.createCompany);
 
   const navigate = useNavigate();
@@ -51,38 +52,58 @@ export function NewCompanyForm() {
   async function onSubmit(values: z.infer<typeof newCompanyFormSchema>) {
     setIsSubmitting(true);
     if (selectedImage) {
-      const postUrl = await generateUploadUrl();
+      try {
+        const postUrl = await generateUploadUrl();
 
-      const result = await fetch(postUrl, {
-        method: "POST",
-        headers: { "Content-Type": selectedImage!.type },
-        body: selectedImage,
-      });
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": selectedImage!.type },
+          body: selectedImage,
+        });
 
-      const { storageId } = await result.json();
+        const { storageId } = await result.json();
 
-      await createCompany({
-        latitude: values.latitude ?? "",
-        location: values.location,
-        longitude: values.longitude ?? "",
-        name: values.name,
-        logo: storageId,
-      });
-      setIsSubmitting(false);
-      navigate({
-        to: "/",
-      });
+        const company = await createCompany({
+          latitude: values.latitude ?? "",
+          location: values.location,
+          longitude: values.longitude ?? "",
+          name: values.name,
+          logo: storageId,
+        });
+
+        toast.success("Company created successfully");
+
+        navigate({
+          to: "/company/$companyId",
+          params: {
+            companyId: company,
+          },
+        });
+      } catch (error) {
+        showErrorMessage(error);
+      }
     } else {
-      await createCompany({
-        latitude: values.latitude ?? "",
-        location: values.location,
-        longitude: values.longitude ?? "",
-        name: values.name,
-      });
-      setIsSubmitting(false);
-      navigate({
-        to: "/",
-      });
+      try {
+        const company = await createCompany({
+          latitude: values.latitude ?? "",
+          location: values.location,
+          longitude: values.longitude ?? "",
+          name: values.name,
+        });
+
+        toast.success("Company created successfully");
+
+        navigate({
+          to: "/company/$companyId",
+          params: {
+            companyId: company,
+          },
+        });
+      } catch (error) {
+        showErrorMessage(error);
+      } finally {
+        setIsSubmitting(false);
+      }
     }
 
     form.reset();

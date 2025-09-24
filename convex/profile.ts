@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation } from "./_generated/server";
-import { userMutation, userQuery } from "./user";
+import { userMutation, userQuery } from "./utils";
 
 export const createProfile = mutation({
   args: {

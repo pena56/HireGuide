@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown, Plus } from "lucide-react";
+import type { FunctionReturnType } from "convex/server";
 
 import {
   DropdownMenu,
@@ -9,30 +9,50 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { api } from "@/lib/convex";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "@tanstack/react-router";
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string
-    logo: React.ElementType
-    plan: string
-  }[]
-}) {
-  const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+type UserMembershipsType = FunctionReturnType<
+  typeof api.memberships.getUserMemberships
+>;
 
-  if (!activeTeam) {
-    return null
+export function TeamSwitcher({ teams }: { teams?: UserMembershipsType }) {
+  const { companyId } = useParams({ from: "/company/$companyId" });
+  const navigate = useNavigate();
+
+  const [activeTeam, setActiveTeam] = useState(() =>
+    teams?.find((i) => i?.companyId === companyId)
+  );
+
+  const { isMobile } = useSidebar();
+
+  useEffect(() => {
+    if (companyId && teams) {
+      setActiveTeam(() => teams?.find((i) => i?.companyId === companyId));
+    }
+  }, [companyId, teams]);
+
+  const handleOnSwitchTeam = (companyId: string) => {
+    navigate({
+      to: "/company/$companyId",
+      params: {
+        companyId,
+      },
+    });
+  };
+
+  if (!teams) {
+    return null;
   }
 
   return (
@@ -45,47 +65,79 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <activeTeam.logo className="size-4" />
+                <Avatar className="w-8 h-8 rounded-sm">
+                  {activeTeam?.companyLogo && (
+                    <AvatarImage
+                      src={activeTeam?.companyLogo ?? ""}
+                      className="object-cover"
+                    />
+                  )}
+
+                  <AvatarFallback className="font-semibold bg-transparent">
+                    {activeTeam?.companyName?.substring(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
+                <span className="truncate font-medium">
+                  {activeTeam?.companyName}
+                </span>
+                <span className="truncate text-xs capitalize">
+                  {activeTeam?.role}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg font-poppins"
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Companies
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {teams.map((team) => (
               <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
+                key={team._id}
+                onClick={() => {
+                  setActiveTeam(team);
+                  handleOnSwitchTeam(team.companyId);
+                }}
                 className="gap-2 p-2"
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
+                  <Avatar className="w-6 h-6 rounded-sm">
+                    {team?.companyLogo && (
+                      <AvatarImage src={team?.companyLogo ?? ""} />
+                    )}
+
+                    <AvatarFallback className="font-semibold">
+                      {team?.companyName?.substring(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                {team?.companyName}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                <Plus className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
+              <Link
+                to="/company/new"
+                className="w-full flex items-center gap-2"
+              >
+                <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                  <Plus className="size-4" />
+                </div>
+                <div className="text-muted-foreground font-medium">
+                  New Company
+                </div>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

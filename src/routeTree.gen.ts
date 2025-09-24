@@ -14,6 +14,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CompanyNewRouteImport } from './routes/company.new'
+import { Route as CompanyCompanyIdRouteImport } from './routes/company.$companyId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -40,12 +41,18 @@ const CompanyNewRoute = CompanyNewRouteImport.update({
   path: '/company/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompanyCompanyIdRoute = CompanyCompanyIdRouteImport.update({
+  id: '/company/$companyId',
+  path: '/company/$companyId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
+  '/company/$companyId': typeof CompanyCompanyIdRoute
   '/company/new': typeof CompanyNewRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
+  '/company/$companyId': typeof CompanyCompanyIdRoute
   '/company/new': typeof CompanyNewRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,34 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/signup': typeof SignupRoute
+  '/company/$companyId': typeof CompanyCompanyIdRoute
   '/company/new': typeof CompanyNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/profile' | '/signup' | '/company/new'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/profile'
+    | '/signup'
+    | '/company/$companyId'
+    | '/company/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/profile' | '/signup' | '/company/new'
-  id: '__root__' | '/' | '/login' | '/profile' | '/signup' | '/company/new'
+  to:
+    | '/'
+    | '/login'
+    | '/profile'
+    | '/signup'
+    | '/company/$companyId'
+    | '/company/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/profile'
+    | '/signup'
+    | '/company/$companyId'
+    | '/company/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +104,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   SignupRoute: typeof SignupRoute
+  CompanyCompanyIdRoute: typeof CompanyCompanyIdRoute
   CompanyNewRoute: typeof CompanyNewRoute
 }
 
@@ -116,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompanyNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/company/$companyId': {
+      id: '/company/$companyId'
+      path: '/company/$companyId'
+      fullPath: '/company/$companyId'
+      preLoaderRoute: typeof CompanyCompanyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   SignupRoute: SignupRoute,
+  CompanyCompanyIdRoute: CompanyCompanyIdRoute,
   CompanyNewRoute: CompanyNewRoute,
 }
 export const routeTree = rootRouteImport

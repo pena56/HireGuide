@@ -56,7 +56,13 @@ export function CompaniesList() {
     <div className="w-full max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {data?.map((company) => (
-          <Link to="/company/new" key={company._id}>
+          <Link
+            to="/company/$companyId"
+            params={{
+              companyId: company.companyId,
+            }}
+            key={company._id}
+          >
             <div className="flex flex-col items-center justify-center p-6 bg-accent rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer">
               <Avatar className="w-24 h-24 rounded-full aspect-square ring-4 ring-white dark:ring-gray-700">
                 <AvatarImage

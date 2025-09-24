@@ -16,6 +16,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/lib/convex";
+import { showErrorMessage } from "@/lib/utils";
 
 export const editProfileFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -23,7 +24,7 @@ export const editProfileFormSchema = z.object({
 });
 
 export function EditProfileForm() {
-  const generateUploadUrl = useMutation(api.user.generateUploadImageUrl);
+  const generateUploadUrl = useMutation(api.utils.generateUploadImageUrl);
   const profile = useQuery(api.profile.getProfile);
   const editProfile = useMutation(api.profile.editProfile);
 
@@ -44,38 +45,50 @@ export function EditProfileForm() {
   async function onSubmit(values: z.infer<typeof editProfileFormSchema>) {
     setIsSubmitting(true);
     if (selectedImage) {
-      const postUrl = await generateUploadUrl();
+      try {
+        const postUrl = await generateUploadUrl();
 
-      const result = await fetch(postUrl, {
-        method: "POST",
-        headers: { "Content-Type": selectedImage!.type },
-        body: selectedImage,
-      });
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": selectedImage!.type },
+          body: selectedImage,
+        });
 
-      const { storageId } = await result.json();
+        const { storageId } = await result.json();
 
-      await editProfile({
-        name: values.name,
-        image: storageId,
-      });
-      setIsSubmitting(false);
-      navigate({
-        to: "/",
-      });
-      toast.success("Profile Updated Successfully");
+        await editProfile({
+          name: values.name,
+          image: storageId,
+        });
+
+        toast.success("Profile Updated Successfully");
+
+        navigate({
+          to: "/",
+        });
+      } catch (error) {
+        showErrorMessage(error);
+      } finally {
+        setIsSubmitting(false);
+      }
     } else {
-      await editProfile({
-        name: values.name,
-        image: profile?.image,
-      });
-      setIsSubmitting(false);
-      navigate({
-        to: "/",
-      });
-      toast.success("Profile Updated Successfully");
-    }
+      try {
+        await editProfile({
+          name: values.name,
+          image: profile?.image,
+        });
 
-    form.reset();
+        toast.success("Profile Updated Successfully");
+
+        navigate({
+          to: "/",
+        });
+      } catch (error) {
+        showErrorMessage(error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
   }
 
   return (
